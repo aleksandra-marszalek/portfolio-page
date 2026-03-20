@@ -4,6 +4,8 @@ Personal portfolio and blog built with Next.js 16, Tailwind CSS, and MDX. Fast t
 
 Built with a healthy assist from [Claude Code](https://claude.ai/code).
 
+![Portfolio Screen](docs/screen.png)
+
 ## Stack
 
 - **Next.js 16** (App Router) — file-based routing, static generation
