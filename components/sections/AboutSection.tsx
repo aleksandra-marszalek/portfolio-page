@@ -10,7 +10,7 @@ export default function AboutSection() {
           <p className="text-zinc-400 text-sm mt-1">Technical Lead · Senior Backend Engineer · Lifelong Learner</p>
         </div>
       </div>
-      <div className="space-y-3 text-zinc-400 leading-relaxed">
+      <div className="space-y-3 text-zinc-400 leading-relaxed text-justify">
         <p>
           Hey, I&apos;m Ola! <br/>I&apos;m a Technical Lead and Senior Backend Engineer who loves building things that
           actually matter - solutions that are both well-crafted and genuinely useful to the people using them.

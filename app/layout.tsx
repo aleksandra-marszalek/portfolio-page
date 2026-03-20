@@ -16,11 +16,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Your Name — Software Engineer",
-    template: "%s · Your Name",
+    default: "Aleksandra Marszalek — Software Engineer",
+    template: "%s · Aleksandra Marszalek",
   },
   description:
-    "Software engineer building things for the web. TypeScript, Next.js, Go.",
+    "Software engineer personal portfolio page.",
 };
 
 export default function RootLayout({

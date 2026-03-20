@@ -30,6 +30,7 @@ export const projects: Project[] = [
       "Simple portfolio built with Next.js 15, Tailwind CSS and MDX. Features an about section, project showcase, and a file-based blog.",
     techStack: ["Next.js", "TypeScript", "Tailwind CSS", "MDX"],
     repoUrl: "https://github.com/aleksandra-marszalek/portfolio-page",
+    liveUrl: "https://www.aleksandramarszalek.co.uk/",
     featured: false,
     year: 2026,
   }

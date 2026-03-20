@@ -15,7 +15,7 @@ export default function BlogPostCard({ post }: { post: BlogPostMeta }) {
           </h3>
           <time className="text-xs text-zinc-500 shrink-0">{formatDate(post.date)}</time>
         </div>
-        <p className="text-sm text-zinc-400 leading-relaxed">{post.summary}</p>
+        <p className="text-sm text-zinc-400 leading-relaxed text-justify">{post.summary}</p>
         {post.tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-1">
             {post.tags.map((tag) => (

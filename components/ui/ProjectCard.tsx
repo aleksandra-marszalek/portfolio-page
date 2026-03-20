@@ -46,7 +46,7 @@ export default function ProjectCard({ project }: { project: Project }) {
           )}
         </div>
       </div>
-      <p className="text-sm text-zinc-400 leading-relaxed">{project.description}</p>
+      <p className="text-sm text-zinc-400 leading-relaxed text-justify">{project.description}</p>
       <div className="flex flex-wrap gap-2 mt-auto">
         {project.techStack.map((tech) => (
           <TechBadge key={tech} label={tech} />

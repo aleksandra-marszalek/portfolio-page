@@ -66,7 +66,7 @@ export default async function BlogPostPage({ params }: Props) {
           )}
         </div>
         {post.summary && (
-          <p className="text-zinc-400 leading-relaxed border-l-2 border-indigo-500 pl-4">
+          <p className="text-zinc-400 leading-relaxed border-l-2 border-indigo-500 pl-4 text-justify">
             {post.summary}
           </p>
         )}
@@ -74,7 +74,7 @@ export default async function BlogPostPage({ params }: Props) {
 
       <hr className="border-zinc-800" />
 
-      <div className="prose">
+      <div className="prose text-justify">
         <MDXRemote source={post.content} options={mdxOptions} />
       </div>
     </article>

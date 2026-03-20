@@ -2,6 +2,8 @@
 
 Personal portfolio and blog built with Next.js 16, Tailwind CSS, and MDX. Fast to set up, easy to maintain, no database required.
 
+See live website [here](https://www.aleksandramarszalek.co.uk/)!
+
 Built with a healthy assist from [Claude Code](https://claude.ai/code).
 
 ![Portfolio Screen](docs/screen.png)
