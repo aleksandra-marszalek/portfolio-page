@@ -19,7 +19,6 @@ export default function AboutSection() {
       </div>
 
       <div className="space-y-3 text-zinc-600 dark:text-zinc-400 leading-relaxed text-justify">
-        {/* First paragraph - always visible */}
         <p>
           Hey, I&apos;m Ola! <br/>I&apos;m a Technical Lead and Senior Backend Engineer who loves building things that
           actually matter - solutions that are both well-crafted and genuinely useful to the people using them.
@@ -27,9 +26,8 @@ export default function AboutSection() {
           I genuinely care about diversity, equity, and building workplaces where everyone can do their best work.
         </p>
 
-        {/* Expandable content with smooth transition */}
         <div
-          className={`space-y-3 transition-all duration-300 ease-in-out overflow-hidden ${
+          className={`space-y-3 transition-[max-height,opacity] duration-300 ease-in-out overflow-hidden ${
             isExpanded
               ? 'max-h-96 opacity-100'
               : 'max-h-0 opacity-0 md:max-h-96 md:opacity-100'
@@ -48,7 +46,6 @@ export default function AboutSection() {
           </p>
         </div>
 
-        {/* Read More button - only visible on mobile */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
           className="md:hidden flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors mt-2"

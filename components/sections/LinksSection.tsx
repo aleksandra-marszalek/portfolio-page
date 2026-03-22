@@ -40,7 +40,7 @@ export default function LinksSection() {
             target={href.startsWith("mailto") || download ? undefined : "_blank"}
             rel={href.startsWith("mailto") || download ? undefined : "noopener noreferrer"}
             download={download ? "Aleksandra_Marszalek_CV.pdf" : undefined}
-            className="flex items-center gap-4 rounded-xl border border-zinc-200 bg-white px-5 py-4 hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700 dark:hover:bg-zinc-800/50 transition-all group"
+            className="flex items-center gap-4 rounded-xl border border-zinc-200 bg-white px-5 py-4 hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700 dark:hover:bg-zinc-800/50 transition-colors group"
           >
             <Icon
               size={20}
