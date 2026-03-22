@@ -4,10 +4,10 @@ import { Project } from "@/types";
 
 export default function ProjectCard({ project }: { project: Project }) {
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6 flex flex-col gap-4 hover:border-zinc-700 hover:-translate-y-1 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/10">
+    <div className="rounded-xl border border-zinc-200 bg-white p-6 flex flex-col gap-4 hover:border-zinc-300 hover:-translate-y-1 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/10">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h3 className="font-semibold text-zinc-100">{project.title}</h3>
+          <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">{project.title}</h3>
           <span className="text-xs text-zinc-500">{project.year}</span>
         </div>
         <div className="flex gap-3 shrink-0">
@@ -16,7 +16,7 @@ export default function ProjectCard({ project }: { project: Project }) {
               href={project.repoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-zinc-500 hover:text-zinc-200 transition-colors"
+              className="text-zinc-400 hover:text-zinc-800 dark:text-zinc-500 dark:hover:text-zinc-200 transition-colors"
               aria-label="Backend repository"
             >
               <Github size={18} />
@@ -27,7 +27,7 @@ export default function ProjectCard({ project }: { project: Project }) {
               href={project.repoUrlFe}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-zinc-500 hover:text-zinc-200 transition-colors"
+              className="text-zinc-400 hover:text-zinc-800 dark:text-zinc-500 dark:hover:text-zinc-200 transition-colors"
               aria-label="Frontend repository"
             >
               <Github size={18} />
@@ -38,7 +38,7 @@ export default function ProjectCard({ project }: { project: Project }) {
               href={project.liveUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-zinc-500 hover:text-zinc-200 transition-colors"
+              className="text-zinc-400 hover:text-zinc-800 dark:text-zinc-500 dark:hover:text-zinc-200 transition-colors"
               aria-label="Live demo"
             >
               <ExternalLink size={18} />
@@ -46,7 +46,7 @@ export default function ProjectCard({ project }: { project: Project }) {
           )}
         </div>
       </div>
-      <p className="text-sm text-zinc-400 leading-relaxed text-justify">{project.description}</p>
+      <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed text-justify">{project.description}</p>
       <div className="flex flex-wrap gap-2 mt-auto">
         {project.techStack.map((tech) => (
           <TechBadge key={tech} label={tech} />

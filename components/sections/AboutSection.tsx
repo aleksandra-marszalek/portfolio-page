@@ -13,25 +13,25 @@ export default function AboutSection() {
           AM
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-zinc-100">Aleksandra Marszalek</h1>
-          <p className="text-zinc-400 text-sm mt-1">Technical Lead · Senior Backend Engineer · Lifelong Learner</p>
+          <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Aleksandra Marszalek</h1>
+          <p className="text-zinc-600 dark:text-zinc-400 text-sm mt-1">Technical Lead · Senior Backend Engineer · Lifelong Learner</p>
         </div>
       </div>
-      
-      <div className="space-y-3 text-zinc-400 leading-relaxed text-justify">
+
+      <div className="space-y-3 text-zinc-600 dark:text-zinc-400 leading-relaxed text-justify">
         {/* First paragraph - always visible */}
         <p>
           Hey, I&apos;m Ola! <br/>I&apos;m a Technical Lead and Senior Backend Engineer who loves building things that
           actually matter - solutions that are both well-crafted and genuinely useful to the people using them.
-          I get a lot of energy from working through hard problems and collaborating closely with the business. 
+          I get a lot of energy from working through hard problems and collaborating closely with the business.
           I genuinely care about diversity, equity, and building workplaces where everyone can do their best work.
         </p>
 
         {/* Expandable content with smooth transition */}
-        <div 
+        <div
           className={`space-y-3 transition-all duration-300 ease-in-out overflow-hidden ${
-            isExpanded 
-              ? 'max-h-96 opacity-100' 
+            isExpanded
+              ? 'max-h-96 opacity-100'
               : 'max-h-0 opacity-0 md:max-h-96 md:opacity-100'
           }`}
         >
@@ -51,7 +51,7 @@ export default function AboutSection() {
         {/* Read More button - only visible on mobile */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="md:hidden flex items-center gap-1 text-sm text-indigo-400 hover:text-indigo-300 transition-colors mt-2"
+          className="md:hidden flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors mt-2"
         >
           {isExpanded ? (
             <>
