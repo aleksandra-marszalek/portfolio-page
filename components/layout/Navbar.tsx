@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 
 const links = [
@@ -7,6 +10,8 @@ const links = [
 ];
 
 export default function Navbar() {
+  const pathname = usePathname();
+
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-200 bg-zinc-100/80 dark:border-zinc-800 dark:bg-zinc-950/80 backdrop-blur-sm">
       <nav className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
@@ -17,16 +22,23 @@ export default function Navbar() {
           Aleksandra Marszalek
         </Link>
         <ul className="flex items-center gap-6">
-          {links.map(({ href, label }) => (
-            <li key={href}>
-              <Link
-                href={href}
-                className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"
-              >
-                {label}
-              </Link>
-            </li>
-          ))}
+          {links.map(({ href, label }) => {
+            const isActive = pathname === href || pathname.startsWith(href + "/");
+            return (
+              <li key={href}>
+                <Link
+                  href={href}
+                  className={`text-sm transition-colors ${
+                    isActive
+                      ? "text-indigo-600 dark:text-indigo-400"
+                      : "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+                  }`}
+                >
+                  {label}
+                </Link>
+              </li>
+            );
+          })}
           <li>
             <ThemeToggle />
           </li>

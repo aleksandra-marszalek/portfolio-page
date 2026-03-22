@@ -10,7 +10,7 @@ export default function BlogPostCard({ post }: { post: BlogPostMeta }) {
     >
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between gap-4">
-          <h3 className="font-semibold text-zinc-900 group-hover:text-indigo-600 dark:text-zinc-100 dark:group-hover:text-indigo-400 transition-colors">
+          <h3 className="font-semibold text-zinc-900 group-hover:text-indigo-600 dark:text-zinc-100 dark:group-hover:text-indigo-400 transition-colors line-clamp-2 min-w-0">
             {post.title}
           </h3>
           <time className="text-xs text-zinc-500 shrink-0">{formatDate(post.date)}</time>

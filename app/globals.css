@@ -22,6 +22,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* Prose styles for blog posts — light mode defaults */
