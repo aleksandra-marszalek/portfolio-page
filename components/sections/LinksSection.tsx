@@ -1,11 +1,11 @@
-import { Github, Linkedin, Mail } from "lucide-react";
+import { Github, Linkedin, Mail, FileDown } from "lucide-react";
 
 const links = [
   {
     label: "GitHub",
     href: "https://github.com/aleksandra-marszalek",
     icon: Github,
-    description: "See my code and open source contributions",
+    description: "See my projects",
   },
   {
     label: "LinkedIn",
@@ -14,11 +14,18 @@ const links = [
     description: "Connect with me professionally",
   },
   {
+    label: "Download CV",
+    href: "/Aleksandra_Marszalek_CV.pdf",
+    icon: FileDown,
+    description: "View my full resume (PDF)",
+    download: true,
+  },
+  {
     label: "Email",
     href: "mailto:aaleksandra.mmarszalek@gmail.com",
     icon: Mail,
     description: "Get in touch directly",
-  },
+  }
 ];
 
 export default function LinksSection() {
@@ -26,12 +33,13 @@ export default function LinksSection() {
     <section id="links">
       <h2 className="text-lg font-semibold text-zinc-100 mb-4">Connect</h2>
       <div className="flex flex-col gap-3">
-        {links.map(({ label, href, icon: Icon, description }) => (
+        {links.map(({ label, href, icon: Icon, description, download }) => (
           <a
             key={label}
             href={href}
-            target={href.startsWith("mailto") ? undefined : "_blank"}
-            rel={href.startsWith("mailto") ? undefined : "noopener noreferrer"}
+            target={href.startsWith("mailto") || download ? undefined : "_blank"}
+            rel={href.startsWith("mailto") || download ? undefined : "noopener noreferrer"}
+            download={download ? "Aleksandra_Marszalek_CV.pdf" : undefined}
             className="flex items-center gap-4 rounded-xl border border-zinc-800 bg-zinc-900 px-5 py-4 hover:border-zinc-700 hover:bg-zinc-800/50 transition-all group"
           >
             <Icon
