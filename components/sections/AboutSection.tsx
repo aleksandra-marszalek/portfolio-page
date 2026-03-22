@@ -29,7 +29,7 @@ export default function AboutSection() {
 
         {/* Expandable content with smooth transition */}
         <div
-          className={`space-y-3 transition-all duration-300 ease-in-out overflow-hidden ${
+          className={`space-y-3 transition-[max-height,opacity] duration-300 ease-in-out overflow-hidden ${
             isExpanded
               ? 'max-h-96 opacity-100'
               : 'max-h-0 opacity-0 md:max-h-96 md:opacity-100'
