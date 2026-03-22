@@ -9,10 +9,10 @@ export default function FeaturedProjects() {
   return (
     <section id="projects">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-zinc-100">Featured Projects</h2>
+        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Featured Projects</h2>
         <Link
           href="/projects"
-          className="flex items-center gap-1 text-xs text-zinc-500 hover:text-indigo-400 transition-colors"
+          className="flex items-center gap-1 text-xs text-zinc-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
         >
           All projects <ArrowRight size={13} />
         </Link>
