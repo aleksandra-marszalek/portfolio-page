@@ -1,0 +1,107 @@
+---
+title: "Writing my first app after a break from coding. The story of TODO App."
+date: "2026-03-23"
+summary: "Returning from a career break means proving to yourself - and everyone else - that you still have it. Here's how I built a fully deployed, secured, and tested full-stack app from scratch - and what I leaned on to get there."
+tags: ["Java", "Spring Boot", "React", "full-stack", "portfolio"]
+published: true
+---
+
+## Why a TODO app?
+
+When you're coming back from a career break (or any other longer break from coding - maternal leave, change of career, becoming a non-coding manager...), you need a project that says *I still know what I'm doing* - to yourself as much as anyone else. A TODO app is the classic choice in many tutorials for a reason. The domain is boring, which means nothing distracts you from the actual engineering: security, testing, clean architecture, a real deployment.
+
+I wanted to build something I'd genuinely be proud to show. Not just a tutorial I followed, not a half-finished side project - a full system, end to end, with proper auth, proper tests, and actually running in production. And I love todo lists - I'm a heavy user myself so it was nice to think of what else I'd add or what is non-negotiable (ordering, persistance).
+
+## What I built
+
+A full-stack CRUD application with two separately deployed services:
+
+- A **Spring Boot 3** REST API with JWT authentication, per-user data isolation, and 80%+ test coverage
+- A **React 19** single-page app consuming that API, deployed as static assets
+
+Both are open source, documented, and live. You can hit the API right now with a `curl` command from the README and have a JWT token in under thirty seconds. Or, you can head straight to the live FE app.
+
+## The stack
+
+**Backend:** Java 21, Spring Boot 3.3.5, Spring Security 6, Spring Data JPA, MySQL 8, Swagger/OpenAPI 3, Testcontainers, JUnit 5, Mockito.
+
+**Frontend:** React 19, Vite 7, Tailwind CSS v3, React Router v7, Axios, Vitest.
+
+**Deployed on:** Railway (API + database) and Vercel (frontend).
+
+Nothing fancy, intentionally. When you're coming back fresh, you want your stack to feel familiar and stable - not like another thing to learn.
+
+## A few things worth talking about
+
+### Spring Security 6 is easier to use than you think
+
+You don't need to use `WebSecurityConfigurerAdapter` - instead you can now declare a `SecurityFilterChain` bean directly, which is more explicit and genuinely easier to read:
+
+```java
+http
+  .csrf(AbstractHttpConfigurer::disable)
+  .sessionManagement(sm ->
+      sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+  .authorizeHttpRequests(auth -> auth
+      .requestMatchers("/api/auth/**", "/api/health",
+                       "/swagger-ui/**").permitAll()
+      .anyRequest().authenticated())
+  .addFilterBefore(jwtAuthFilter,
+      UsernamePasswordAuthenticationFilter.class);
+```
+
+Stateless sessions, a custom JWT filter at the front of the chain, public routes declared explicitly. Readable at a glance.
+
+### Keep authorisation in the service layer
+
+This is the kind of thing that might bit you later if you get it wrong early. Every todo operation goes through a service method that checks ownership before doing anything:
+
+```java
+public Todo getTodoById(Long id, String username) {
+  return todoRepository.findByIdAndUsername(id, username)
+      .orElseThrow(() -> new ResourceNotFoundException(
+          "Todo not found or access denied"));
+}
+```
+
+One query, two constraints. Users physically can't see each other's data - not because of a check after the fetch, but because the fetch itself requires a matching username. Controllers are for routing. Services are for the business logic.
+
+### Testcontainers over H2
+
+I used Testcontainers to spin up a real MySQL 8 container for integration tests instead of H2 in-memory. It's a slightly heavier setup - Docker needs to be running - but your tests exercise the same database engine as production. No dialect surprises, no "it passed locally" moments. Also, great to test it out before using in a commercial project.
+
+```java
+@Container
+static MySQLContainer<?> mysql =
+    new MySQLContainer<>("mysql:8")
+        .withDatabaseName("testdb");
+```
+
+Thirty-plus tests in total covering service logic, controller behaviour, and the full auth flow.
+
+## The frontend - honest notes
+
+I'm a backend engineer. React is not my natural habitat, and I won't pretend otherwise.
+
+The frontend was built with a lot of help - Stack Overflow, documentation, and AI assistants filling in the gaps. I knew what I wanted it to do, and I leaned on those tools to get the implementation right. That feels worth saying, because I think it's how a lot of real-world development actually works, and there's no point in pretending otherwise.
+The result is a clean, deployed, mobile-responsive app. It does what it's supposed to. I'm genuinely happy with it.
+
+## Honest tradeoffs
+
+JWT tokens are stored in `localStorage`, which is accessible to JavaScript. The more secure approach is `httpOnly` cookies. For a portfolio project, this is fine; for a financial app, it's not. I documented this in the repo's Architecture Decision Records rather than just hoping nobody noticed.
+
+Client-side sorting for todos: fast, gives instant feedback, wrong choice if you ever add pagination. Documented as a known tradeoff with a clear migration path. The habit of writing down *why* you made a call is worth more than the call itself.
+
+## Takeaways
+
+It worked. Not just technically - the project did what I needed it to do for me personally. It reminded me that I know how to build things properly, and gave me something concrete to point at (and also to show to my husband and my mum).
+
+If you're in a similar place - coming back, changing direction, or just wanting a clean greenfield to practise on - I'd recommend this format. Scope it tightly, don't compromise on quality, ship it.
+
+- [Backend repo](https://github.com/aleksandra-marszalek/todo-app)
+- [Frontend repo](https://github.com/aleksandra-marszalek/todo-app-frontend)
+- [Swagger docs (live)](https://todo-app-production-218b.up.railway.app/swagger-ui/index.html)
+- [Live demo](https://todo-app-frontend-silk-one.vercel.app)
+
+See you in another post,
+Ola
