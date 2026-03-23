@@ -96,6 +96,7 @@ body {
   border-color: #3f3f46;
 }
 .dark .prose pre code {
+  background: none;
   color: #e4e4e7;
 }
 .dark .prose blockquote {
