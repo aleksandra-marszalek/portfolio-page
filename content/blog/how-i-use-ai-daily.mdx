@@ -1,0 +1,74 @@
+---
+title: "How I Actually Use AI in 2026 - An Engineer's Honest Take"
+date: "2026-04-02"
+summary: "AI is everywhere, but most people either overclaim or dismiss it. Here's an honest look at how I've incorporated it into my daily work as an engineer looking for a new job - what genuinely helps, what doesn't, and what surprised me."
+tags: ["AI", "productivity", "personal", "engineering"]
+published: true
+---
+
+It's estimated that 250–350 million people use AI tools daily. That's a staggering number, even if some of those usages are via third-party tools where users don't even know they're interacting with AI. Most of the content written about it falls into one of two camps: extreme enthusiasm or gloomy scepticism. I'm not particularly interested in either. I've been using AI daily for a couple of years now, across work and personal life, and I have a more complicated - and honestly, maybe quite boring - story to tell.
+
+This isn't supposed to be a tool list or a productivity hack roundup. It's just an honest account of what that actually looks like. For me.
+
+## Coding and Development
+
+This is where AI has changed my day-to-day the most, and it's where I'm most confident saying: yes, it genuinely helps.
+
+The biggest wins aren't anything fancy. Boilerplate nobody wants to write. Understanding error messages I don't recognise. Finding out how a library works without reading an entire documentation page. Debugging something I've been staring at too long and need a second set of eyes on. All of these are faster with AI than without.
+
+With faster than ever progress of specialist tooling, like Claude Code, it does change quite a lot though. Need a skeleton of a REST API? Use an agent. Want unit test coverage of your whole service class? It will take Claude a couple of seconds. Need a simple frontend to deploy and test your backend-heavy application? You've got it. With a caveat though - you need to make sure you give it the right context.
+
+What AI is not good at: anything that requires real understanding of your full codebase, your team's conventions, or the business logic behind a decision. It produces confident-sounding code that can be subtly wrong in ways that take longer to undo than if you'd written it yourself. The trust calibration takes a while. For simple, well-designed, well-scoped tasks it will save you tonnes of time. For more domain-specific changes, I had to learn to treat its output the way I'd treat a PR from a developer I don't know yet - interesting starting point, needs review, not going in without scrutiny.
+
+Building the projects on this blog - the [TODO app](/blog/my-first-app)'s frontend and the initial skeleton of [World Kitchen](/blog/world-kitchen) - involved a lot of AI collaboration. It was genuinely useful. It was also not magic. I still had to understand what it was doing, catch the mistakes, and make the architectural decisions myself. Mostly, to know what the trade-offs are and how to fix something if it eventually goes wrong.
+
+Will it change the future of software engineering? Definitely. It already is. But change is not bad - we just need to learn how to navigate it.
+
+## Writing and Editing
+
+This blog is a good example. I write all the posts - the ideas, the structure, the voice. Then I use AI to check consistency, catch awkward phrasing, and occasionally suggest a better way to say something I've been wrestling with. That's especially useful for a non-native speaker. Real win.
+
+What I don't do is ask it to write things fully for me. When I've tried, the output is technically fine and completely flat. It takes out my voice. It makes the writing appealing to SEO, to another machine - but it doesn't give me back anything real. I want to write up my thoughts. I want my voice to be heard. So the most useful prompt I've found is not "write this" but "what's wrong with this?" - which forces it into a critical rather than generative mode, giving me an extra editor instead of replacing the main writer.
+
+One thing worth watching: if you use AI to polish everything you write, you stop noticing when your own draft is already good. The feedback loop can quietly erode your ability to judge your own work. So I do recommend stopping and asking yourself: do I like it? Do I want to publish it? If the answers are yes, why do I care what AI thinks?
+
+## Research and Learning
+
+This is where I've found the most unexpected value. AI has become my first stop when I need to understand something new quickly - a new framework, an unfamiliar concept, a technology I keep seeing mentioned but haven't had time to investigate.
+
+Having an AI assistant is like having a personal tutor. Except - don't treat everything it says as a source of truth. A couple of months ago I would have said: beware of the knowledge cutoff. It lacked current context. It was trained on stale data. But it's changing fast. Many models can now pull context from news sites and a wide range of tools. I won't say it knows everything yet, or that you can trust it completely - but it is improving dramatically. For the better.
+
+For now, keep questioning the responses. AI is excellent at giving you the mental model you need to ask better questions. It's less reliable on specifics, and genuinely dangerous if you're relying on it for things that matter without verification.
+
+The shift I've noticed in myself: I read documentation differently now. Less "read the whole thing and hope I absorb it" and more "understand the concept first, then use the docs to fill in the specifics." AI is good at the first part. Documentation is still essential for the second.
+
+Another use of AI as a tutor: it can check your understanding. When properly instructed, it can act as an examiner - testing your knowledge and giving you feedback. It's been a game changer for interview preparation. I've always struggled with the stress of not knowing what interviewers will ask, which stops me from showing my full potential. Now I can work through those scenarios ahead of the calls. You can even *call* the AI using your microphone and have it respond back. We are truly living in the future. For the results of my preparation - we'll need to wait until I hear back from some recruiters, so stay tuned for a part 2 on that particular use case.
+
+In the meantime: think about what a great tool this could be for learning a new language. Historically there have been great tools for grammar and vocabulary, but anyone who has tried to learn a language from scratch will tell you - the real challenge is speaking for the first time. AI changes that in a meaningful way, and I'm looking forward to exploring it further.
+
+## Planning and Thinking Through Problems
+
+This is an easy use case, but an underrated one. I use AI as a rubber duck that talks back.
+
+When I'm stuck on a decision - how to structure a project, whether an approach makes sense, how to frame something I'm writing - articulating the problem to an AI forces me to be clearer about what I actually think. And occasionally it pokes a hole in my reasoning that I hadn't noticed.
+
+I don't take its conclusions as given. But the process of having something push back on your thinking - even if it's not always right - is genuinely useful. It's cheaper than talking to a colleague for every small decision, and more productive than going in circles in your own head.
+
+There's also a subtler benefit. You know why people used to flip a coin to make a decision? Because as the coin is in the air, you realise what you actually wanted. You can use AI in a similar way - whatever it suggests, you'll know immediately whether you're happy with it or whether you were expecting something else. It's a surprisingly effective decision-making tool.
+
+I've used this for planning blog posts (including the structure of this one), working through technical decisions, and even organising my CV. The sky's the limit - except, perhaps, for pasting sensitive documents into a non-enterprise AI model. Not advisable.
+
+## The Honest Part
+
+There are things AI consistently doesn't do well for me.
+
+Anything creative that requires genuine taste and a human touch. Anything where the specific context of my situation matters and I haven't been able to explain it clearly enough. Anything that requires understanding that two things I haven't mentioned are in tension with each other.
+
+I also notice myself reaching for it when I should just think. There's a version of AI use that's just sophisticated procrastination - asking an AI to explore a problem instead of sitting with it long enough to have an actual insight. I catch myself doing this more than I'd like, and often realise it took me longer than if I'd just solved it myself.
+
+The question I'm still sitting with: what happens to skills you stop exercising? I write better first drafts than I used to, partly because AI feedback has made me more aware of what I'm doing. But I also reach for the edit button faster than I once did. I'm not sure yet whether that's a net gain.
+
+What I've landed on, for now: AI is most useful when I'm clear about what I'm asking it to do and why. It's least useful when I'm using it to avoid the harder work of thinking.
+
+See you in the next post,
+Ola
