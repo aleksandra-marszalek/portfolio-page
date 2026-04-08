@@ -1,0 +1,134 @@
+---
+title: "Building Word of the Day: A Micronaut API on AWS Lambda"
+date: "2026-04-08"
+summary: "I started applying for new jobs. My CV looked strong, but I realised AWS got much more popular recently and it would be good to close that gap. So I gave it a go with a new project."
+tags: ["Java", "Micronaut", "AWS Lambda", "serverless", "portfolio", "DynamoDB", "GraalVM"]
+published: true
+
+---
+
+I started to prepare for interviews recently. My prep sessions with AI agents (you can read about it more [here](/blog/how-i-use-ai-daily)) started to look better, but one question kept coming up - have you ever worked with AWS? I didn't - and most of the companies would probably be OK with that - I have been working on GCP for a couple of years now. 
+
+But I wanted to be ready for some conversations. And even if my recruiter was OK with that gap - I'd need to close it eventually. So why not now?
+
+Here's a short story on what I built, what broke, how I fixed it, and what I'd tell my past self before starting.
+
+---
+
+## The idea
+
+As always, the idea came from a real world need. Sort of. My husband is a big cryptic crossword geek. And he loves his Cambridge Dictionary. So I thought - what if he could learn a random word daily with my app?
+
+And so every day at 9am UTC, the app fetches a random English word from an external API, enriches it with a full definition from a dictionary API, and stores the result in DynamoDB. Users can then call an endpoint to see the day's word - definition, part of speech - and submit a guess. The comparison happens server-side. The word never leaves the backend until you get it right.
+
+Simple product. But underneath it: scheduling, caching, external API integration, serverless deployment, and a layer of design decisions I had to think through and justify. That's a good challenge and a great interview prep.
+
+---
+
+## The stack
+
+**Micronaut** was the deliberate choice here. It's not as ubiquitous (great word of the day for the future) as Spring Boot, which makes it a more interesting talking point. The key difference is when dependency injection happens: Spring resolves it at runtime using reflection, Micronaut resolves it at compile time. That sounds academic until you try to build a GraalVM native image and discover that Spring's reflection-heavy approach and GraalVM's "I need to know everything at build time" requirement are fundamentally at odds. Micronaut should sidestep this entirely. In theory.
+
+**AWS Lambda** with an API Gateway HTTP trigger for the REST endpoints, and **EventBridge** for the daily 9am scheduler. Same Lambda function handles both: EventBridge sends a different event payload than API Gateway, so the handler inspects the event and routes accordingly. Clean enough for a project this size.
+
+**DynamoDB** for persistence. The key design decision here was the schema. My first instinct was to use the date as the partition key — simple, obvious, one record per day. But that makes any kind of range query (last 7 days, all of April) impossible without a full table scan. The better design uses a constant `"WORD"` as the partition key and the date string (`2026-04-06`) as the sort key. Everything lands in one partition, sorted chronologically. DynamoDB stores partition items in sort-key order, so querying the most recent word is a single call with `ScanIndexForward=false, Limit=1`. The history endpoint becomes trivial - and I will be willing to extend it in the future, so better to be prepared.
+
+**Redis via Upstash** for caching. The word only changes once a day, so there's no reason to hit DynamoDB on every request. The cache stores today's word; the scheduler invalidates it when a new word is saved. I used `@Cacheable` and `@CacheInvalidate` rather than managing the cache manually — Micronaut wires these up through AOP, and they compose cleanly with the rest of the service layer. Upstash specifically because Lambda functions don't maintain persistent connections — Upstash uses a standard Lettuce client over TLS, which works reliably without requiring a persistent connection or a VPC.
+
+---
+
+## Architecture decisions worth talking about
+
+### Server-side guess validation
+
+The guess endpoint receives the user's word and compares it to today's stored word. The comparison never happens in the browser. This is obvious once you say it out loud — if the answer lives in the client, anyone can read it from the network tab — but it's worth stating explicitly. The API returns only definition, part of speech, and word length. The word itself stays hidden until you get it right.
+
+### Composite key design
+
+This one I redesigned mid-build. Starting with `date` as the sole partition key felt natural but was wrong. The DynamoDB query model means: fast access to items within a partition, expensive access across partitions. A single-date partition key means every date is its own isolated island. A `PK=WORD, SK=date` design puts all words in one partition and enables date-range queries for free. The change took five minutes; understanding why it was necessary took longer. Great learning point though!
+
+### Cache invalidation strategy
+
+A naive TTL cache would work — set it to 24 hours, job done. But it creates a subtle bug: if a user hits the API at 8:55am, the response gets cached. The scheduler runs at 9am and writes a new word. Users who cached before 9am continue seeing yesterday's word for up to 24 hours. The fix: explicit invalidation. When the scheduler saves a new word, it invalidates the cache entry. The next request fetches fresh data, caches it, and everything is consistent. 25-hour TTL stays as a safety net in case the scheduler fails.
+
+### One Lambda, two triggers
+
+The same function handles API Gateway requests and EventBridge schedule events. Rather than hacking a single handler to detect the source, I went with two separate handler classes — `FunctionRequestHandler` extending Micronaut's API Gateway handler, and `SchedulerHandler` implementing `RequestHandler` directly. Both are declared in the SAM template pointing at the same JAR. Clean separation of concerns, same deployment unit. Can be extended in the future easily.
+
+---
+
+## What was genuinely difficult
+
+### GraalVM native image
+
+This was the most time-consuming part by a significant margin, and worth documenting carefully because the errors are cryptic if you don't know what's happening.
+
+**Problem 1: Architecture mismatch.** I'm on an M-series Mac, which means any local native image build produces an ARM macOS binary. Turns out that Lambda (even ARM Lambda) needs a Linux binary. The fix is to build inside a Docker container using `-Dpackaging=docker-native`, which cross-compiles inside a Lambda-compatible Linux image. This takes 15-20 minutes on the first run.
+
+**Problem 2: `BeanTableSchema` uses runtime lambda generation.** The DynamoDB Enhanced Client's annotation-driven schema mapper (`@DynamoDbBean`, `TableSchema.fromBean()`) works by generating method handles at runtime using `LambdaMetafactory`. GraalVM doesn't support defining hidden classes at runtime. The fix is to switch to `StaticTableSchema` — an explicit, builder-style schema definition that maps fields to DynamoDB attributes without any runtime code generation. More verbose, but completely transparent to GraalVM.
+
+```java
+TableSchema<WordOfDay> schema = TableSchema.builder(WordOfDay.class)
+    .newItemSupplier(WordOfDay::new)
+    .addAttribute(String.class, a -> a.name("PK")
+        .getter(WordOfDay::getPk)
+        .setter(WordOfDay::setPk)
+        .tags(StaticAttributeTags.primaryPartitionKey()))
+    // ... rest of attributes
+    .build();
+```
+
+**Problem 3: Serialization config.** GraalVM strips anything it can't prove is needed at compile time — including constructors accessed via reflection and serialization metadata. The fix is a `reflect-config.json` and `serialization-config.json` in `META-INF/native-image/`, registering `WordOfDay` explicitly. This tells GraalVM to preserve the class's serialization metadata, which Redis needs to store and retrieve cached objects.
+
+The payoff: cold start drops from ~6 seconds (JVM) to ~100ms (native). Memory usage halves. Lambda billing drops accordingly. Worth the effort for a production system; potentially not worth it for a prototype (but hey, who can tell me what to do in my personal project).
+
+### Lombok and GraalVM
+
+Lombok's `@NoArgsConstructor` and `@Data` generate code at compile time via annotation processing, which GraalVM should be able to see. In practice, the combination of Lombok-generated constructors and the DynamoDB Enhanced Client's reflection-based instantiation caused `NoSuchMethodException` at runtime. The cleanest fix was removing Lombok from the entity class entirely and writing explicit getters and setters. For service and repository classes — where Lombok is used for `@Slf4j` and nothing else — it's fine. Great learning again, if only I didn't need to wait to build the docker image on every code change. Oh well.
+
+### External APIs and rate limiting on Lambda
+
+Lambda functions share IP address ranges with every other AWS customer. Free-tier external APIs rate-limit by IP. The random word API started returning 429s fairly quickly during testing. This is a solvable problem, but worth being aware of: what works fine from your laptop may behave differently from Lambda. A side note — a free API you found one day might not work the next. And if your app depends on it heavily, well, you might be in trouble. My solution? Deploy your own API or move to a DB word list. Something you can control. On my TODO list.
+
+---
+
+## Testing approach
+
+I wanted this to be properly tested rather than manually verified, partly as training for real world interviews, but also because I do genuinely believe in the power of automated testing.
+
+**Integration tests** for the DynamoDB repository use Testcontainers — a JUnit extension that spins up a real `amazon/dynamodb-local` Docker container before the tests run and tears it down after. `TestPropertyProvider` lets you inject the dynamically assigned container port into Micronaut's config before the application context starts. The tests exercise real DynamoDB behaviour: key schema, query ordering, scan direction. No mocking. Amazing experience.
+
+**Unit tests** for the service layer use Mockito with `@ExtendWith(MockitoExtension.class)`. I practiced TDD for the `getWordOfDay()` method — writing each test first, watching it fail, implementing the minimum to make it pass, then moving to the next case. Three tests: word found today, fallback to most recent, exception when nothing exists. Straightforward cycle, but practicing it deliberately makes it feel natural under pressure.
+
+---
+
+## What I'd do differently
+
+The random word API dependency is the weakest point in the architecture. One flaky free-tier API and the scheduler fails silently. I'd replace it with my own API deployed with proper auth for my own use. Or just hold an internal word list — a DynamoDB table seeded with a few hundred curated words, with a query that picks one at random. No rate limits, no external dependency, better word quality, and the ability to filter by difficulty or category.
+
+The EventBridge scheduler delivers events with at-least-once semantics — in rare cases it could fire twice. The second write would overwrite the day's word with a different randomly chosen word. A DynamoDB conditional write (`attribute_not_exists(PK)`) on the scheduler's save operation makes it idempotent in one line.
+
+I'd also set up proper CloudWatch alarms — specifically an alarm on scheduler Lambda errors, so a failed daily job doesn't go unnoticed until a user reports a stale word.
+
+---
+
+## What I'd tell someone starting the same project
+
+Pick Micronaut if you're targeting Lambda or GraalVM native image. The compile-time DI isn't just a nice property — it's what makes the native image story viable. Spring's runtime reflection and GraalVM's build-time analysis genuinely don't mix well.
+
+Design the DynamoDB schema before you write any code. The partition/sort key design determines what queries are fast and what queries are impossible. Changing it after the fact means deleting and recreating the table.
+
+Build and test the JVM version first, fully, before touching native image. Native image is a different compilation target with its own failure modes. Debugging "why does the app fail on Lambda" and "why does the scheduler not run" at the same time is hard. Get everything working on JVM, then tackle native.
+
+Upstash for Redis on Lambda. ElastiCache requires a VPC, which adds latency, complexity, and a non-trivial cost floor. Upstash is serverless Redis with a TLS connection — no persistent connection required, no VPC, generous free tier.
+
+---
+
+The project is live. The scheduler runs at 9am UTC. The API is deployed. I've also added a very simple frontend, so my non-coding husband (and everyone else) can actually use it.
+
+If you want to try it click [here](https://word-of-the-day-frontend.s3.eu-west-1.amazonaws.com/index.html) and if you're interested in the code, visit my [GitHub repo](https://github.com/aleksandra-marszalek/word-of-the-day).
+
+Hope you enjoyed it as much as I did enjoy building it. 
+
+See you in the next post,
+Ola
