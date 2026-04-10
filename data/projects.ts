@@ -3,19 +3,19 @@ import { Project } from "@/types";
 export const projects: Project[] = [
   {
     id: "word-of-the-day",
-    title: "Word of the Day",
+    title: "Word of the Day [LIVE]",
     description:
       "Full-stack (BE heavy) application built with Micronaut and modern Java. Released as an AWS Lambda with AWS API Gateway and EventBridge using Cron Scheduler for fetching the word. Full integration with AWS DynamoDB and Redis cache to provide a seamless user experience. With simple single page HTML + vanilla JS Frontend.",
     techStack: ["Java 21", "Micronaut", "DynamoDB", "Redis", "AWS", "Lambda", "HTML", "JavaScript", "Rest APIs"],
     repoUrl: "https://github.com/aleksandra-marszalek/word-of-the-day",
     repoUrlFe: "https://github.com/aleksandra-marszalek/word-of-the-day-frontend",
-    liveUrl: "https://word-of-the-day-frontend.s3.eu-west-1.amazonaws.com/index.html",
+    liveUrl: "https://wotd.aleksandramarszalek.co.uk",
     featured: true,
     year: 2026,
   },
   {
     id: "todo-app",
-    title: "TODO App",
+    title: "TODO App [LIVE]",
     description:
       "Full-stack TODO application with a Spring Boot REST API and a React frontend. Features JWT authentication, role-based access control, and full CRUD operations. Includes 30+ tests with 80%+ code coverage using TestContainers, and comprehensive API documentation via Swagger/OpenAPI. The frontend is built with React and Tailwind CSS for a modern, responsive user experience.",
     techStack: ["Java 21", "Spring Boot 3.3.5", "MySQL 8", "Spring Security + JWT", "Swagger/OpenAPI 3.0", "TestContainers", "React", "TypeScript", "Tailwind CSS"],
@@ -37,7 +37,7 @@ export const projects: Project[] = [
   },
   {
     id: "portfolio-page",
-    title: "Portfolio Page",
+    title: "Portfolio Page [LIVE]",
     description:
       "Simple, clean portfolio built with Next.js 15, Tailwind CSS and MDX. Features an about section, project showcase, and a file-based blog. Deployed on Vercel with custom domain.",
     techStack: ["Next.js 15", "TypeScript", "Tailwind CSS", "MDX"],
