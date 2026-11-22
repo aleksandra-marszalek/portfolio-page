@@ -15,13 +15,12 @@ export const projects: Project[] = [
   },
   {
     id: "todo-app",
-    title: "TODO App [LIVE]",
+    title: "TODO App",
     description:
       "Full-stack TODO application with a Spring Boot REST API and a React frontend. Features JWT authentication, role-based access control, and full CRUD operations. Includes 30+ tests with 80%+ code coverage using TestContainers, and comprehensive API documentation via Swagger/OpenAPI. The frontend is built with React and Tailwind CSS for a modern, responsive user experience.",
     techStack: ["Java 21", "Spring Boot 3.3.5", "MySQL 8", "Spring Security + JWT", "Swagger/OpenAPI 3.0", "TestContainers", "React", "TypeScript", "Tailwind CSS"],
     repoUrl: "https://github.com/aleksandra-marszalek/todo-app",
     repoUrlFe: "https://github.com/aleksandra-marszalek/todo-app-frontend",
-    liveUrl: "https://todo-app-frontend-silk-one.vercel.app",
     featured: true,
     year: 2026,
   },
